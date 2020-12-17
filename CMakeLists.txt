@@ -9,13 +9,20 @@ include_directories(include)
 # FIXME: Uzupełnij.
 set(SOURCE_FILES
         src/factory.cpp
+        src/helpers.cpp
+        src/nodes.cpp
+        src/package.cpp
+        src/reports.cpp
+        src/simulation.cpp
+        src/storage_types.cpp
+        src/types.cpp
         )
-add_executable(factory ${SOURCE_FILES} main.cpp)
+add_executable(net_sim ${SOURCE_FILES} main.cpp)
 
 
 set(SOURCES_FILES_TESTS
-        test/factory.cpp
-        )
+        test/net_test.cpp
+        include/package.hpp)
 
 # Dodaj konfigurację typu `Test`.
 add_executable(net_test ${SOURCE_FILES} ${SOURCES_FILES_TESTS} test/main_gtest.cpp)
