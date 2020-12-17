@@ -7,3 +7,29 @@ add_compile_options(-Wall -Wextra -Werror -Wpedantic -pedantic-errors -Werror=sw
 include_directories(include)
 
 # FIXME: Uzupełnij.
+set(SOURCE_FILES
+        src/factory.cpp
+        )
+add_executable(factory ${SOURCE_FILES} main.cpp)
+
+
+set(SOURCES_FILES_TESTS
+        test/factory.cpp
+        )
+
+# Dodaj konfigurację typu `Test`.
+add_executable(net_test ${SOURCE_FILES} ${SOURCES_FILES_TESTS} test/main_gtest.cpp)
+
+# Dodaj katalogi z plikami nagłówkowymi wyłącznie do konkretnej konfiguracji (tu: `Test`).
+target_include_directories(net_test PUBLIC
+        googletest-master/googlemock/include
+        googletest-master/googletest/include
+        mocks
+        )
+
+# Dodaj podkatalog `googletest-master`.
+add_subdirectory(googletest-master)
+
+# Podlinkuj bibliotekę o identyfikatorze `gmock` (w pliku CMake) wyłącznie do konkretnej
+# konfiguracji (tu: `Test`).
+target_link_libraries(net_test gmock)
