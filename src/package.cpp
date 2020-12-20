@@ -12,7 +12,7 @@ Package::Package(){
         assigned_IDs.insert(_id);
         freed_IDs.erase(freed_IDs.begin());
     } else if (not assigned_IDs.empty()){
-        _id = ElementID(assigned_IDs.end()->get_id() + 1);
+        _id = ElementID((assigned_IDs.end()--)->get_id() + 1);
         assigned_IDs.insert(_id);
     }
     else{

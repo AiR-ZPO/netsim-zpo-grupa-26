@@ -13,9 +13,7 @@ public:
     Package();
     Package(ElementID id) : _id(id) {};
     Package(Package&&) = default;
-
-    Package& operator=(Package&&) = default;
-
+    Package& operator = (Package&&) = default;
     ElementID get_id() const { return _id; }
 
 private:

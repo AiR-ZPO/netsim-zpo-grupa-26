@@ -11,14 +11,19 @@ void PackageQueue::push(Package package)
 
 Package PackageQueue::pop()
 {
-
     switch (type_)
+    {
+        case PackageQueueType::Fifo_:
         {
-            case PackageQueueType::Fifo_:
-                PackageList_.pop_front();
-                break;
-            case PackageQueueType::Lifo_:
-                PackageList_.pop_back();
-                break;
+            Package package(PackageList_.begin()->get_id());
+            PackageList_.pop_front();
+            return package;
         }
+        case PackageQueueType::Lifo_:
+        {
+            Package package((PackageList_.end()--)->get_id());
+            PackageList_.pop_back();
+            return package;
+        }
+    }
 }
