@@ -4,23 +4,25 @@
 
 #ifndef NET_SIMULATION_PACKAGE_HPP
 #define NET_SIMULATION_PACKAGE_HPP
+#include "types.hpp"
+
+#include <set>
+
+class Package{
+public:
+    Package();
+    Package(ElementID id) : _id(id) {};
+    Package(Package&&) = default;
+
+    Package& operator=(Package&&) = default;
+
+    ElementID get_id() const { return _id; }
+
+private:
+    ElementID _id;
+    static std::set<ElementID> assigned_IDs;
+    static std::set<ElementID> freed_IDs;
+};
 
 #endif //NET_SIMULATION_PACKAGE_HPP
 
-
-class IPackageStockpile
-{
-public:
-    virtual push(Package&&): void {}
-    virtual empty(): bool {query}
-    virtual size(): size_type {query}
-    virtual ~IPackageStockpile() {}
-};
-
-class IPackageQueue: public IPackageStockpile
-{
-public:
-    virtual pop(): Package {}
-    virtual get_queue_type(): PackageQueueType {query}
-    virtual ~IPackageQueue() {}
-};

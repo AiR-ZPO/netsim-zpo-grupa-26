@@ -1,11 +1,12 @@
 //
 // Created by Pawel on 17.12.2020.
 //
+#include "package.hpp"
 #include "storage_types.hpp"
 #include <utility>
-void PackageQueue::push(Package&&)
+void PackageQueue::push(Package package)
 {
-    PackageList_.emplace_back(std::move(Package&&));
+    PackageList_.emplace_back(std::move(package));
 }
 
 Package PackageQueue::pop()
