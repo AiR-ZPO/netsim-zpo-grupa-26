@@ -8,12 +8,15 @@ std::set<ElementID> Package::freed_IDs;
 
 Package::Package(){
     if (not freed_IDs.empty()){
-        _id = ElementID(*freed_IDs.begin());
+        _id = *freed_IDs.begin();
+        assigned_IDs.insert(_id);
         freed_IDs.erase(freed_IDs.begin());
     } else if (not assigned_IDs.empty()){
         _id = ElementID(assigned_IDs.end()->get_id() + 1);
+        assigned_IDs.insert(_id);
     }
     else{
         _id = ElementID(1);
+        assigned_IDs.insert(_id);
     }
 }
