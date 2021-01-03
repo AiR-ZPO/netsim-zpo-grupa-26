@@ -25,5 +25,9 @@ Package PackageQueue::pop()
             PackageList_.pop_back();
             return package;
         }
+        default:
+        {
+            throw std::invalid_argument( "received negative value" );
+        }
     }
 }

@@ -4,16 +4,13 @@
 
 #ifndef NET_SIMULATION_TYPES_HPP
 #define NET_SIMULATION_TYPES_HPP
-class ElementID {
-public:
-    ElementID() = default;
-    ElementID(int id) : _id(id) {}
+typedef int ElementID;
 
-    int get_id() const { return _id; }
+typedef int TimeOffset;
 
-private:
-    int _id;
-};
+typedef int Time;
+
+typedef double ProbabilityGenerator;
 #endif //NET_SIMULATION_TYPES_HPP
 
 //aliasy
