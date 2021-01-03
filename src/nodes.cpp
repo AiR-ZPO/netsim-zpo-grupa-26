@@ -24,7 +24,7 @@ void PackageSender::push_package(Package&&)
 
 void ReceiverPreferences::add_receiver(IPackageReceiver* r)
 {
-    preference_[r] = pg_;
+    preference_[r] = default_probability_generator();
     int sum = std::accumulate(preference_.begin(), preference_.end(), 0);
     for (auto it = preference_.begin(); it != preference_.end(); ++it){
         it->second = it->second/sum;

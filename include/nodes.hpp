@@ -15,6 +15,7 @@ klasy IPackageReceiver, Storehouse, ReceiverPreferences, PackageSender, Ramp, Wo
 #include <map>
 #include <iostream>
 #include <memory>
+#include "helpers.cpp"
 
 enum class ReceiverType{
     WORKER, STOREHOUSE
@@ -39,7 +40,7 @@ class ReceiverPreferences
 public:
     using preferences_t = std::map<IPackageReceiver*, double>;
     using const_iterator = preferences_t::const_iterator;
-    explicit ReceiverPreferences(ProbabilityGenerator pg) : pg_(pg) {}
+    explicit ReceiverPreferences(ProbabilityGenerator pg = default_probability_generator) : pg_(std::move(pg)) {}
     void add_receiver(IPackageReceiver* r);
     void remove_receiver(IPackageReceiver* r);
     IPackageReceiver* choose_receiver();
@@ -56,6 +57,7 @@ private:
 
 class PackageSender: public ReceiverPreferences {
 public:
+    PackageSender() = default;
     ReceiverPreferences receiver_preferences_;
     PackageSender(PackageSender&&) = default;
     void send_package();
@@ -73,8 +75,8 @@ class Storehouse: public IPackageStockpile, public IPackageReceiver
 public:
     explicit Storehouse(ElementID id, std::unique_ptr<IPackageStockpile> d = std::make_unique<PackageQueue>(PackageQueueType::Fifo_)) : _id(id), _d(std::move(d)) {}
     ElementID get_id() const override { return _id; }
-    void receive_package(Package&& p) override { _d->push(std::move(p)); } // Do omówienia!
-    ReceiverType get_receiver_type() override { return ReceiverType ::STOREHOUSE; } // Do omówienia!
+    void receive_package(Package&& p) override { _d->push(std::move(p)); }
+    ReceiverType get_receiver_type() override { return ReceiverType ::STOREHOUSE; }
 
     IPackageStockpile::const_iterator begin() const override { return _d->cbegin(); }
     IPackageStockpile::const_iterator cbegin() const override { return _d->cbegin(); }
@@ -90,7 +92,6 @@ class Ramp: public PackageSender
 {
 public:
     Ramp(ElementID id, TimeOffset di) : _id(id), _di(di) {}
-
     ElementID get_id() const { return _id; }
     TimeOffset get_delivery_interval() const { return _di;}
     void deliver_goods(Time t);
@@ -108,8 +109,8 @@ public:
     Time get_package_precessing_start_time() const { return _t; }
     ElementID get_id() const override { return _id; }
     void do_work(Time t); // Do omówienia!
-    void receive_package(Package&& p) override { _q->push(std::move(p)); } // Do omówienia!
-    ReceiverType get_receiver_type() override { return ReceiverType ::WORKER; } // Do omówienia!
+    void receive_package(Package&& p) override { _q->push(std::move(p)); }
+    ReceiverType get_receiver_type() override { return ReceiverType ::WORKER; }
 
     IPackageStockpile::const_iterator begin() const override { return _q->cbegin(); }
     IPackageStockpile::const_iterator cbegin() const override { return _q->cbegin(); }
