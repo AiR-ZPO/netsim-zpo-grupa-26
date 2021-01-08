@@ -25,30 +25,30 @@ private:
 public:
     Factory(T node_list): _node_list(node_list) {};
 
-    bool is_consistent() {} // TODO: Uzupełnij!
+    bool is_consistent(); // TODO: Do sprawdzenia!
     void do_deliveries(Time t);
     void do_package_passing();
-    void do_work(Time t) {}
-    void remove_receiver(collection: NodeCollection<Node>&, id: ElementID) // TODO: Uzupełnij!
+    void do_work(Time t);
+    void remove_receiver(collection: NodeCollection<Node>&, id: ElementID);
 
-    void add_ramp(Ramp&&) {} // TODO: Uzupełnij!
-    void remove_ramp(ElementID id) {} // TODO: Uzupełnij!
-    NodeCollection<Ramp>::iterator find_ramp_by_id(ElementID id) {} // TODO: Uzupełnij!
-    NodeCollection<Ramp>::const_iterator find_ramp_by_id(ElementID id) {} // TODO: Uzupełnij!
+    void add_ramp(Ramp&&);
+    void remove_ramp(ElementID id);
+    NodeCollection<Ramp>::iterator find_ramp_by_id(ElementID id);
+    NodeCollection<Ramp>::const_iterator find_ramp_by_id(ElementID id);
     NodeCollection<Ramp>::const_iterator ramp_cbegin() { return _ramps_list.cbegin; }
     NodeCollection<Ramp>::const_iterator ramp_cend() { return _ramps_list.cend(); }
 
-    void add_worker(Worker&&) {} // TODO: Uzupełnij!
-    void remove_worker(ElementID id) {} // TODO: Uzupełnij!
-    NodeCollection<Worker>::iterator find_worker_by_id(ElementID id) {} // TODO: Uzupełnij!
-    NodeCollection<Worker>::const_iterator find_worker_by_id(ElementID id) {} // TODO: Uzupełnij!
+    void add_worker(Worker&&) {};
+    void remove_worker(ElementID id);
+    NodeCollection<Worker>::iterator find_worker_by_id(ElementID id) {};
+    NodeCollection<Worker>::const_iterator find_worker_by_id(ElementID id);
     NodeCollection<Worker>::const_iterator worker_cbegin() { return _workers_list.cbegin(); }
     NodeCollection<Worker>::const_iterator worker_cend() { return _workers_list.cend; }
 
-    void add_storehouse(Storehouse&&) {} // TODO: Uzupełnij!
-    void remove_storehouse(ElementID id) {} // TODO: Uzupełnij!
-    NodeCollection<Storehouse>::iterator find_storehouse_by_id(ElementID id) {} // TODO: Uzupełnij!
-    NodeCollection<Storehouse>::const_iterator find_storehouse_by_id(ElementID id) {} // TODO: Uzupełnij!
+    void add_storehouse(Storehouse&&);
+    void remove_storehouse(ElementID id);
+    NodeCollection<Storehouse>::iterator find_storehouse_by_id(ElementID id);
+    NodeCollection<Storehouse>::const_iterator find_storehouse_by_id(ElementID id);
     NodeCollection<Storehouse>::const_iterator storehouse_cbegin() { return _storehouses_list.cbegin(); }
     NodeCollection<Storehouse>::const_iterator storehouse_cend() { return _storehouses_list.cend(); }
 };
