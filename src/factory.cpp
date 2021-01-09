@@ -3,7 +3,6 @@
 //
 
 #include "factory.hpp"
-//#include "types.hpp"
 #include "nodes.hpp"
 #include <vector>
 #include <utility>
@@ -16,9 +15,9 @@ bool Factory::is_consistent()
 {
     Color std::map<PackageSender*, NodeColor> = {};
     for(auto i: _ramps_list)
-        Color[*i] = NodeColor::UNVISITED;
+        Color[&i] = NodeColor::UNVISITED;
     for(auto i: _workers_list)
-        Color[*i] = NodeColor::UNVISITED;
+        Color[&i] = NodeColor::UNVISITED;
 
     try
     {
@@ -36,7 +35,7 @@ bool Factory::is_consistent()
 
     is_way_from_sender_to_receiver(PackageSender* sender, NodeColor color)
     {
-        if( Color[*sender] == NodeColor::VERIFIED)
+        if( Color[sender] == NodeColor::VERIFIED)
             return true
         Color[sender] == NodeColor::VISITED
         if (*sender.receiver_preferences_.get_preferences().size() == 0)
@@ -54,7 +53,7 @@ bool Factory::is_consistent()
             }
             else if(*key.get_receiver_type() == ReceiverType::WORKER)
             {
-                IPackageReceiver* receiver_ptr = ...;
+                IPackageReceiver* receiver_ptr = key;
                 auto worker_ptr = dynamic_cast<Worker*>(receiver_ptr);
                 auto sendrecv_ptr = dynamic_cast<PackageSender*>(worker_ptr);
                 if( sendrecv_ptr == sender)
@@ -142,7 +141,7 @@ void Factory::remove_receiver(collection: NodeCollection<Node>&, id: ElementID)
 
 void Factory::add_ramp(Ramp&&)
 {
-    _rams_list.add(Ramp)
+    _rams_list.add(Ramp())
 }
 
 void Factory::remove_ramp(ElementID id)
@@ -153,7 +152,7 @@ void Factory::remove_ramp(ElementID id)
 
 void Factory::add_worker(Worker&&)
 {
-    _workers_list.add(Worker)
+    _workers_list.add(Worker())
 }
 
 void Factory::remove_worker(ElementID id)
@@ -164,7 +163,7 @@ void Factory::remove_worker(ElementID id)
 
 void Factory::add_storehouse(Storehouse&&)
 {
-    _storehouses_list.add(Storehouse)
+    _storehouses_list.add(Storehouse())
 }
 
 void Factory::remove_storehouse(ElementID id)
