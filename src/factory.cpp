@@ -3,7 +3,7 @@
 //
 
 #include "factory.hpp"
-#include "nodes.hpp"
+
 #include <vector>
 #include <utility>
 #include <map>
@@ -11,94 +11,103 @@
 
 enum class NodeColor { UNVISITED, VISITED, VERIFIED };
 
+bool has_reachable_storehouse(const PackageSender* sender, std::map<const PackageSender*, NodeColor>& node_colors)
+{
+    if(node_colors[sender] == NodeColor::VERIFIED)
+    {
+        return true;
+    }
+    node_colors[sender] = NodeColor::VISITED;
+    if (sender->receiver_preferences_.get_preferences().size() == 0)
+    {
+        throw std::logic_error;
+    }
+
+    bool another_receiver = false;
+    ReceiverPreferences::preferences_t pref = sender->receiver_preferences_.get_preferences();
+    for(auto [key, value]: pref)
+    {
+        if(key->get_receiver_type() == ReceiverType::STOREHOUSE)
+        {
+            another_receiver = true
+        }
+        else if(key->get_receiver_type() == ReceiverType::WORKER)
+        {
+            IPackageReceiver* receiver_ptr = key;
+            auto worker_ptr = dynamic_cast<Worker*>(receiver_ptr);
+            auto sendrecv_ptr = dynamic_cast<PackageSender*>(worker_ptr);
+            if( sendrecv_ptr == sender)
+            {
+                continue;
+            }
+            another_receiver = true;
+            if(node_colors[sendrecv_ptr] == NodeColor::UNVISITED)
+            {
+                has_reachable_storehouse(sendrecv_ptr, node_colors);
+            }
+        }
+    }
+    node_colors[sender] = NodeColor::VERIFIED;
+    if(another_receiver)
+    {
+        return true;
+    }
+    else
+    {
+        throw std::logic_error();
+    }
+
+}
+
+
 bool Factory::is_consistent()
 {
-    Color std::map<PackageSender*, NodeColor> = {};
-    for(auto i: _ramps_list)
+    std::map<const PackageSender*, NodeColor> Color = {};
+    for(auto& i: _ramps_list)
+    {
         Color[&i] = NodeColor::UNVISITED;
-    for(auto i: _workers_list)
+    }
+
+    for(auto& i: _workers_list)
+    {
         Color[&i] = NodeColor::UNVISITED;
+    }
 
     try
     {
-        for(auto i: _ramps_list)
+        for(const auto& i: _ramps_list)
         {
-            is_way_from_sender_to_receiver(&i, Color[&i])
-        }
-
-    } catch (std::valueerror)
-    {
-        return false
-    }
-    return true
-
-
-    is_way_from_sender_to_receiver(PackageSender* sender, NodeColor color)
-    {
-        if( Color[sender] == NodeColor::VERIFIED)
-            return true
-        Color[sender] == NodeColor::VISITED
-        if (*sender.receiver_preferences_.get_preferences().size() == 0)
-        {
-            throw std::valueerror();
-        }
-
-        bool another_receiver = false
-        preferences_t pref = *sender.receiver_preferences_.get_preferences();
-        for(auto [key, value]: pref)
-        {
-            if(*key.get_receiver_type() == ReceiverType::STOREHOUSE)
-            {
-                another_receiver = true
-            }
-            else if(*key.get_receiver_type() == ReceiverType::WORKER)
-            {
-                IPackageReceiver* receiver_ptr = key;
-                auto worker_ptr = dynamic_cast<Worker*>(receiver_ptr);
-                auto sendrecv_ptr = dynamic_cast<PackageSender*>(worker_ptr);
-                if( sendrecv_ptr == sender)
-                {
-                    continue;
-                }
-                another_receiver = true
-                if(Color[sendrecv_ptr] == NodeColor::UNVISITED)
-                {
-                    is_way_from_sender_to_receiver(sendrecv_ptr,Color[sendrecv_ptr])
-                }
-            }
-        }
-        Color[sender] = NodeColor::VERIFIED
-        if(another_receiver)
-        {
-            return true
-        }
-        else
-        {
-            throw std::valueerror();
+            has_reachable_storehouse(&i, Color);
         }
 
     }
+    catch (std::logic_error)
+    {
+        return false;
+    }
+    return true;
+
 }
 
 
 
 void Factory::do_deliveries(Time t)
 {
-    for(auto i: _ramps_list)
+    for(auto& i: _ramps_list)
     {
         i.deliver_goods(t);
     }
 }
 void Factory::do_work(int t)
 {
-    for(auto i: _workers_list)
+    for(auto& i: _workers_list)
     {
         i.do_work(t);
     }
 }
 void Factory::do_package_passing()
 {
-    for(auto i: _workers_list)
+    for(auto& i: _workers_list)
     {
         i.send_package();
     }
@@ -106,42 +115,39 @@ void Factory::do_package_passing()
 
 NodeCollection<Ramp>::iterator Factory::find_ramp_by_id(ElementID id)
 {
-    return std::find_if(std::begin(_storehouses_list), std::end(_storehouses_list), [id](auto& i) { return (i.get_id().get_id() == id.get_id()); } );
+    return std::find_if(std::begin(_ramps_list), std::end(_ramps_list), [id]( auto& i) { return (i.get_id() == id); } );
 }
-NodeCollection<Ramp>::const_iterator Factory::find_ramp_by_id(ElementID id)
+NodeCollection<Ramp>::const_iterator Factory::c_find_ramp_by_id(ElementID id)
 {
-    return std::find_if(std::begin(_ramp_list), std::end(_ramp_list), [id](const auto& i) { return (i.get_id().get_id() == id.get_id()); } );
+    return std::find_if(std::begin(_ramps_list), std::end(_ramps_list), [id](auto& i) { return (i.get_id() == id); } );
 }
 
 
 NodeCollection<Worker>::iterator Factory::find_worker_by_id(ElementID id)
 {
-    return std::find_if(std::begin(_storehouses_list), std::end(_storehouses_list), [id](auto& i) { return (i.get_id().get_id() == id.get_id()); } );
+    return std::find_if(std::begin(_workers_list), std::end(_workers_list), [id](auto& i) { return (i.get_id() == id); } );
 }
-NodeCollection<<Worker>::const_iterator Factory::find_worker_by_id(ElementID id)
+NodeCollection<Worker>::const_iterator Factory::c_find_worker_by_id(ElementID id)
 {
-    return std::find_if(std::begin(_workers_list), std::end(_workers_list), [id](const auto& i) { return (i.get_id().get_id() == id.get_id()); } );
+    return std::find_if(std::begin(_workers_list), std::end(_workers_list), [id](const auto& i) { return (i.get_id() == id); } );
 }
 
 
 NodeCollection<Storehouse>::iterator Factory::find_storehouse_by_id(ElementID id)
 {
-    return std::find_if(std::begin(_storehouses_list), std::end(_storehouses_list), [id](const auto& i) { return (i.get_id().get_id() == id.get_id()); } );
+    return std::find_if(std::begin(_storehouses_list), std::end(_storehouses_list), [id](const auto& i) { return (i.get_id() == id); } );
 }
-NodeCollection<Storehouse>::iterator Factory::find_storehouse_by_id(ElementID id)
+NodeCollection<Storehouse>::const_iterator Factory::c_find_storehouse_by_id(ElementID id)
 {
-    return std::find_if(std::begin(_storehouses_list), std::end(_storehouses_list), [id](auto& i) { return (i.get_id().get_id() == id.get_id()); } );
-}
-
-
-void Factory::remove_receiver(collection: NodeCollection<Node>&, id: ElementID)
-{
-    (*collection).remove_by_id(id);
+    return std::find_if(std::begin(_storehouses_list), std::end(_storehouses_list), [id](auto& i) { return (i.get_id() == id); } );
 }
 
-void Factory::add_ramp(Ramp&&)
+
+
+
+void Factory::add_ramp(Ramp&& ramp)
 {
-    _rams_list.add(Ramp())
+    _ramps_list.add(std::move(ramp));
 }
 
 void Factory::remove_ramp(ElementID id)
@@ -150,9 +156,9 @@ void Factory::remove_ramp(ElementID id)
 }
 
 
-void Factory::add_worker(Worker&&)
+void Factory::add_worker(Worker&& worker)
 {
-    _workers_list.add(Worker())
+    _workers_list.add(std::move(worker));
 }
 
 void Factory::remove_worker(ElementID id)
@@ -161,9 +167,9 @@ void Factory::remove_worker(ElementID id)
 }
 
 
-void Factory::add_storehouse(Storehouse&&)
+void Factory::add_storehouse(Storehouse&& storehouse)
 {
-    _storehouses_list.add(Storehouse())
+    _storehouses_list.add(std::move(storehouse));
 }
 
 void Factory::remove_storehouse(ElementID id)
