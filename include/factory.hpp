@@ -27,14 +27,21 @@ public:
 
     const_iterator cbegin() const { return _node_list.cbegin(); }
     const_iterator cend() const { return _node_list.cend(); }
-    iterator begin() const { return _node_list.begin(); }
-    iterator end() const { return _node_list.end(); }
+    iterator begin() { return _node_list.begin(); }
+    iterator end() { return _node_list.end(); }
 
 
     void add(T&& node) { _node_list.emplace_back(std::move(node)); }
 
-    void remove_by_id(ElementID id);
+    void remove_by_id(ElementID id)
+    {
+        NodeCollection::const_iterator it = find_by_id(id);
+        if (it != _node_list.end())
+        {
+            _node_list.erase(it);
+        }
 
+    }
 
     iterator find_by_id(ElementID id){return std::find_if(std::begin(_node_list), std::end(_node_list), [id](auto& i) { return (i.get_id().get_id() == id);});}
     const_iterator c_find_by_id(ElementID id){return std::find_if(std::begin(_node_list), std::end(_node_list), [id](const auto& i) { return (i.get_id().get_id() == id);});}
@@ -48,10 +55,11 @@ private:
     NodeCollection<Ramp> _ramps_list;
     NodeCollection<Worker> _workers_list;
     NodeCollection<Storehouse> _storehouses_list;
+    template <class T>
     void remove_receiver(NodeCollection<T>& collection , ElementID id ){ collection.remove_by_id(id); }
 public:
     Factory(NodeCollection<Ramp>& ramps_list, NodeCollection<Worker>& workers_list, NodeCollection<Storehouse>& storehouses_list):
-    _ramps_list(ramps_list), _workers_list(workers_list), _storehouses_list(storehouses_list) {};
+            _ramps_list(ramps_list), _workers_list(workers_list), _storehouses_list(storehouses_list) {};
 
     bool is_consistent();
     void do_deliveries(Time t);
@@ -81,15 +89,5 @@ public:
     NodeCollection<Storehouse>::const_iterator storehouse_cend() { return _storehouses_list.cend(); }
 };
 
-template <class T>
-void NodeCollection::remove_by_id(ElementID id)
-{
-    NodeCollection::const_iterator it = find_by_id(id);
-    if (it != _node_list.end())
-    {
-        _node_list.erase(it);
-    }
-
-}
 
 #endif //NET_SIMULATION_FACTORY_HPP

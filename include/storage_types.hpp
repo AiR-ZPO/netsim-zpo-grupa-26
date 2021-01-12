@@ -15,7 +15,7 @@
 typ wyliczeniowy PackageQueueType
  */
 enum class PackageQueueType{
-    Fifo_, Lifo_
+    FIFO, LIFO
 };
 
 class IPackageStockpile

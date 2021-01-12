@@ -13,13 +13,13 @@ Package PackageQueue::pop()
 {
     switch (type_)
     {
-        case PackageQueueType::Fifo_:
+        case PackageQueueType::FIFO:
         {
             Package package(PackageList_.begin()->get_id());
             PackageList_.pop_front();
             return package;
         }
-        case PackageQueueType::Lifo_:
+        case PackageQueueType::LIFO:
         {
             Package package((PackageList_.end()--)->get_id());
             PackageList_.pop_back();

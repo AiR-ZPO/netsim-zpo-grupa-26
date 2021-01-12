@@ -14,28 +14,34 @@ void PackageSender::send_package()
     }
 }
 
-void PackageSender::push_package(Package&&)
+void PackageSender::push_package(Package&& p)
 {
     if (!opt)
     {
-        opt.emplace(Package());
+        opt.emplace(std::move(p));
     }
 }
 
 void ReceiverPreferences::add_receiver(IPackageReceiver* r)
 {
     preference_[r] = default_probability_generator();
-    int sum = std::accumulate(preference_.begin(), preference_.end(), 0);
-    for (auto it = preference_.begin(); it != preference_.end(); ++it){
+    double sum = 0.0;
+    for (auto i = preference_.begin(); i != preference_.end(); i++){
+        sum += i->second;
+    }
+    for (auto it = preference_.begin(); it != preference_.end(); it++){
         it->second = it->second/sum;
     }
 }
 
 void ReceiverPreferences::remove_receiver(IPackageReceiver* r)
 {
-    int sum = std::accumulate(preference_.begin(), preference_.end(), 0);
+    double sum = 0.0;
+    for (auto i = preference_.begin(); i != preference_.end(); i++){
+        sum += i->second;
+    }
     preference_.erase(r);
-    for (auto it = preference_.begin(); it != preference_.end(); ++it){
+    for (auto it = preference_.begin(); it != preference_.end(); it++){
         it->second = it->second/sum;
     }
 }
@@ -55,10 +61,11 @@ IPackageReceiver* ReceiverPreferences::choose_receiver()
         else
         {
             a += b->second;
-            b->second += (b++)->second;
+            (b++)->second += b->second;
+            b++;
         }
     }
-    return preference_.begin()->first;
+    return b->first;
 }
 
 void Ramp::deliver_goods(Time t) {

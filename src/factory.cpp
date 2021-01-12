@@ -20,7 +20,7 @@ bool has_reachable_storehouse(const PackageSender* sender, std::map<const Packag
     node_colors[sender] = NodeColor::VISITED;
     if (sender->receiver_preferences_.get_preferences().size() == 0)
     {
-        throw std::logic_error;
+        throw std::logic_error("Nadawca nie posiada żadnego połączenia wyjściowego.");
     }
 
     bool another_receiver = false;
@@ -29,7 +29,7 @@ bool has_reachable_storehouse(const PackageSender* sender, std::map<const Packag
     {
         if(key->get_receiver_type() == ReceiverType::STOREHOUSE)
         {
-            another_receiver = true
+            another_receiver = true;
         }
         else if(key->get_receiver_type() == ReceiverType::WORKER)
         {
@@ -54,7 +54,7 @@ bool has_reachable_storehouse(const PackageSender* sender, std::map<const Packag
     }
     else
     {
-        throw std::logic_error();
+        throw std::logic_error("Nadawca nie posiada żadnego połączenia wyjściowego.");
     }
 
 }
@@ -81,7 +81,7 @@ bool Factory::is_consistent()
         }
 
     }
-    catch (std::logic_error)
+    catch (std::logic_error &)
     {
         return false;
     }

@@ -15,7 +15,7 @@ klasy IPackageReceiver, Storehouse, ReceiverPreferences, PackageSender, Ramp, Wo
 #include <map>
 #include <iostream>
 #include <memory>
-#include "helpers.cpp"
+#include "helpers.hpp"
 
 enum class ReceiverType{
     WORKER, STOREHOUSE
@@ -40,7 +40,6 @@ class ReceiverPreferences
 public:
     using preferences_t = std::map<IPackageReceiver*, double>;
     using const_iterator = preferences_t::const_iterator;
-
     explicit ReceiverPreferences(ProbabilityGenerator pg = default_probability_generator) : pg_(std::move(pg)) {}
     void add_receiver(IPackageReceiver* r);
     void remove_receiver(IPackageReceiver* r);
@@ -74,10 +73,10 @@ private:
 class Storehouse: public IPackageStockpile, public IPackageReceiver
 {
 public:
-    explicit Storehouse(ElementID id, std::unique_ptr<IPackageStockpile> d = std::make_unique<PackageQueue>(PackageQueueType::Fifo_)) : _id(id), _d(std::move(d)) {}
+    explicit Storehouse(ElementID id, std::unique_ptr<IPackageStockpile> d = std::make_unique<PackageQueue>(PackageQueueType::FIFO)) : _id(id), _d(std::move(d)) {}
     ElementID get_id() const override { return _id; }
     void receive_package(Package&& p) override { _d->push(std::move(p)); }
-    ReceiverType get_receiver_type() override { return ReceiverType::STOREHOUSE; }
+    ReceiverType get_receiver_type() override { return ReceiverType ::STOREHOUSE; }
 
     IPackageStockpile::const_iterator begin() const override { return _d->cbegin(); }
     IPackageStockpile::const_iterator cbegin() const override { return _d->cbegin(); }
