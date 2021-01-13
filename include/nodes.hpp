@@ -41,6 +41,7 @@ public:
     using preferences_t = std::map<IPackageReceiver*, double>;
     using const_iterator = preferences_t::const_iterator;
     explicit ReceiverPreferences(ProbabilityGenerator pg = default_probability_generator) : pg_(std::move(pg)) {}
+    ReceiverPreferences(const ReceiverPreferences&) = default;
     void add_receiver(IPackageReceiver* r);
     void remove_receiver(IPackageReceiver* r);
     IPackageReceiver* choose_receiver();
@@ -55,11 +56,13 @@ private:
     ProbabilityGenerator pg_;
 };
 
-class PackageSender: public ReceiverPreferences {
+class PackageSender{
 public:
     PackageSender() = default;
     ReceiverPreferences receiver_preferences_;
     PackageSender(PackageSender&&) = default;
+    //PackageSender(const PackageSender&) = default;
+
     void send_package();
     std::optional<Package>& get_sending_buffer() {return opt;}
 protected:
@@ -70,7 +73,7 @@ private:
 
 
 
-class Storehouse: public IPackageStockpile, public IPackageReceiver
+class Storehouse:/* public IPackageStockpile,*/ public IPackageReceiver
 {
 public:
     explicit Storehouse(ElementID id, std::unique_ptr<IPackageStockpile> d = std::make_unique<PackageQueue>(PackageQueueType::FIFO)) : _id(id), _d(std::move(d)) {}
@@ -92,6 +95,7 @@ class Ramp: public PackageSender
 {
 public:
     Ramp(ElementID id, TimeOffset di) : _id(id), _di(di) {}
+    //Ramp(const Ramp&) = default;
     ElementID get_id() const { return _id; }
     TimeOffset get_delivery_interval() const { return _di;}
     void deliver_goods(Time t);
@@ -101,7 +105,7 @@ private:
     TimeOffset _di;
 };
 
-class Worker: public IPackageQueue, public IPackageReceiver, public PackageSender
+class Worker:/* public IPackageQueue, */public IPackageReceiver, public PackageSender
 {
 public:
     Worker(ElementID id, TimeOffset pd, std::unique_ptr<IPackageQueue> q) : _id(id), _pd(pd), _t(0), _q(std::move(q)), _buf(std::nullopt) {}
