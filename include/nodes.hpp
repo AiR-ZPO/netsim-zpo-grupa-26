@@ -65,15 +65,19 @@ public:
 
     void send_package();
     std::optional<Package>& get_sending_buffer() {return opt;}
+
+    virtual ~PackageSender() = default;
 protected:
     void push_package(Package&&);
 private:
     std::optional<Package> opt;
+
+
 };
 
 
 
-class Storehouse:/* public IPackageStockpile,*/ public IPackageReceiver
+class Storehouse:public IPackageReceiver
 {
 public:
     explicit Storehouse(ElementID id, std::unique_ptr<IPackageStockpile> d = std::make_unique<PackageQueue>(PackageQueueType::FIFO)) : _id(id), _d(std::move(d)) {}
@@ -105,7 +109,7 @@ private:
     TimeOffset _di;
 };
 
-class Worker:/* public IPackageQueue, */public IPackageReceiver, public PackageSender
+class Worker:public IPackageReceiver, public PackageSender
 {
 public:
     Worker(ElementID id, TimeOffset pd, std::unique_ptr<IPackageQueue> q) : _id(id), _pd(pd), _t(0), _q(std::move(q)), _buf(std::nullopt) {}

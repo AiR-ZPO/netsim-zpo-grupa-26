@@ -117,7 +117,7 @@ NodeCollection<Ramp>::iterator Factory::find_ramp_by_id(ElementID id)
 {
     return std::find_if(std::begin(_ramps_list), std::end(_ramps_list), [id]( auto& i) { return (i.get_id() == id); } );
 }
-NodeCollection<Ramp>::const_iterator Factory::c_find_ramp_by_id(ElementID id)
+NodeCollection<Ramp>::const_iterator Factory::find_ramp_by_id(ElementID id) const
 {
     return std::find_if(std::begin(_ramps_list), std::end(_ramps_list), [id](auto& i) { return (i.get_id() == id); } );
 }
@@ -127,7 +127,7 @@ NodeCollection<Worker>::iterator Factory::find_worker_by_id(ElementID id)
 {
     return std::find_if(std::begin(_workers_list), std::end(_workers_list), [id](auto& i) { return (i.get_id() == id); } );
 }
-NodeCollection<Worker>::const_iterator Factory::c_find_worker_by_id(ElementID id)
+NodeCollection<Worker>::const_iterator Factory::find_worker_by_id(ElementID id) const
 {
     return std::find_if(std::begin(_workers_list), std::end(_workers_list), [id](const auto& i) { return (i.get_id() == id); } );
 }
@@ -137,7 +137,7 @@ NodeCollection<Storehouse>::iterator Factory::find_storehouse_by_id(ElementID id
 {
     return std::find_if(std::begin(_storehouses_list), std::end(_storehouses_list), [id](const auto& i) { return (i.get_id() == id); } );
 }
-NodeCollection<Storehouse>::const_iterator Factory::c_find_storehouse_by_id(ElementID id)
+NodeCollection<Storehouse>::const_iterator Factory::find_storehouse_by_id(ElementID id) const
 {
     return std::find_if(std::begin(_storehouses_list), std::end(_storehouses_list), [id](auto& i) { return (i.get_id() == id); } );
 }

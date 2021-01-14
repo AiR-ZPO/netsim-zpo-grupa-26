@@ -18,10 +18,10 @@ template <class T>
 class NodeCollection
 {
 private:
-    std::vector<T> _node_list; // lepsza tutaj bedzie lista zamiast vectora
+    std::list<T> _node_list; // lepsza tutaj bedzie lista zamiast vectora
 public:
     NodeCollection() = default;
-    using container_t = typename std::vector<T>;
+    using container_t = typename std::list<T>;
     using iterator = typename container_t::iterator;
     using const_iterator = typename container_t::const_iterator;
     //NodeCollection(container_t node_list) : _node_list(node_list) {};// konstruktor w takiej formie jest nie potrzebny, potrzebny domyślny
@@ -61,8 +61,9 @@ private:
     template <class T>
     void remove_receiver(NodeCollection<T>& collection , ElementID id ){ collection.remove_by_id(id); }
 public:
-    Factory(NodeCollection<Ramp>& ramps_list, NodeCollection<Worker>& workers_list, NodeCollection<Storehouse>& storehouses_list):
-            _ramps_list(ramps_list), _workers_list(workers_list), _storehouses_list(storehouses_list) {};
+    Factory() = default;
+    //Factory(NodeCollection<Ramp>& ramps_list, NodeCollection<Worker>& workers_list, NodeCollection<Storehouse>& storehouses_list):
+    //        _ramps_list(ramps_list), _workers_list(workers_list), _storehouses_list(storehouses_list) {}; // nie potrzebny taki konstruktor
 
     bool is_consistent();
     void do_deliveries(Time t);
@@ -73,21 +74,21 @@ public:
     void add_ramp(Ramp&& ramp);
     void remove_ramp(ElementID id);
     NodeCollection<Ramp>::iterator find_ramp_by_id(ElementID id);
-    NodeCollection<Ramp>::const_iterator c_find_ramp_by_id(ElementID id);
+    NodeCollection<Ramp>::const_iterator find_ramp_by_id(ElementID id) const;
     NodeCollection<Ramp>::const_iterator ramp_cbegin() { return _ramps_list.cbegin(); }
     NodeCollection<Ramp>::const_iterator ramp_cend() { return _ramps_list.cend(); }
 
     void add_worker(Worker&& worker);
     void remove_worker(ElementID id);
     NodeCollection<Worker>::iterator find_worker_by_id(ElementID id);
-    NodeCollection<Worker>::const_iterator c_find_worker_by_id(ElementID id);
+    NodeCollection<Worker>::const_iterator find_worker_by_id(ElementID id) const;
     NodeCollection<Worker>::const_iterator worker_cbegin() { return _workers_list.cbegin(); }
     NodeCollection<Worker>::const_iterator worker_cend() { return _workers_list.cend(); }
 
     void add_storehouse(Storehouse&& storehouse);
     void remove_storehouse(ElementID id);
     NodeCollection<Storehouse>::iterator find_storehouse_by_id(ElementID id);
-    NodeCollection<Storehouse>::const_iterator c_find_storehouse_by_id(ElementID id);
+    NodeCollection<Storehouse>::const_iterator find_storehouse_by_id(ElementID id) const;
     NodeCollection<Storehouse>::const_iterator storehouse_cbegin() { return _storehouses_list.cbegin(); }
     NodeCollection<Storehouse>::const_iterator storehouse_cend() { return _storehouses_list.cend(); }
 };

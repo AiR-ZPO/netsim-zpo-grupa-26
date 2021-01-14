@@ -22,7 +22,9 @@ add_executable(net_sim ${SOURCE_FILES} main.cpp)
 
 set(SOURCES_FILES_TESTS
         test/net_test.cpp
-        include/package.hpp)
+        test/test_package.cpp
+        test/test_nodes.cpp
+        )
 
 # Dodaj konfigurację typu `Test`.
 add_executable(net_test ${SOURCE_FILES} ${SOURCES_FILES_TESTS} test/main_gtest.cpp)
