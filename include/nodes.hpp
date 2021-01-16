@@ -5,7 +5,6 @@
 #ifndef NET_SIMULATION_NODES_HPP
 #define NET_SIMULATION_NODES_HPP
 
-#endif //NET_SIMULATION_NODES_HPP
 /*
 typ wyliczeniowy ReceiverType
 klasy IPackageReceiver, Storehouse, ReceiverPreferences, PackageSender, Ramp, Worker
@@ -133,5 +132,5 @@ private:
     std::optional<Package> _buf;
 };
 
-
+#endif //NET_SIMULATION_NODES_HPP
 
