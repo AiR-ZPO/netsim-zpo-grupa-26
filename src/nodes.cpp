@@ -24,7 +24,7 @@ void PackageSender::push_package(Package&& p)
 
 void ReceiverPreferences::add_receiver(IPackageReceiver* r)
 {
-    preference_[r] = default_probability_generator();
+    preference_[r] = probability_generator();
     double sum = 0.0;
     for (auto i = preference_.begin(); i != preference_.end(); i++){
         sum += i->second;
@@ -36,11 +36,12 @@ void ReceiverPreferences::add_receiver(IPackageReceiver* r)
 
 void ReceiverPreferences::remove_receiver(IPackageReceiver* r)
 {
+    preference_.erase(r);
     double sum = 0.0;
     for (auto i = preference_.begin(); i != preference_.end(); i++){
         sum += i->second;
     }
-    preference_.erase(r);
+
     for (auto it = preference_.begin(); it != preference_.end(); it++){
         it->second = it->second/sum;
     }

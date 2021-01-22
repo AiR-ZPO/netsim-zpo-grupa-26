@@ -25,7 +25,7 @@ class IPackageReceiver
 public:
     virtual void receive_package(Package&& p) = 0;
     virtual ElementID get_id() const = 0;
-    virtual ReceiverType get_receiver_type() = 0;
+    virtual ReceiverType get_receiver_type() const = 0;
 
     virtual IPackageStockpile::const_iterator begin() const = 0;
     virtual IPackageStockpile::const_iterator cbegin() const = 0;
@@ -63,11 +63,11 @@ public:
     //PackageSender(const PackageSender&) = default;
 
     void send_package();
-    std::optional<Package>& get_sending_buffer() {return opt;}
+    const std::optional<Package>& get_sending_buffer() {return opt;}
 
     virtual ~PackageSender() = default;
 protected:
-    void push_package(Package&&);
+    void push_package(Package&& p);
 private:
     std::optional<Package> opt;
 
@@ -82,7 +82,7 @@ public:
     explicit Storehouse(ElementID id, std::unique_ptr<IPackageStockpile> d = std::make_unique<PackageQueue>(PackageQueueType::FIFO)) : _id(id), _d(std::move(d)) {}
     ElementID get_id() const override { return _id; }
     void receive_package(Package&& p) override { _d->push(std::move(p)); }
-    ReceiverType get_receiver_type() override { return ReceiverType ::STOREHOUSE; }
+    ReceiverType get_receiver_type() const override { return ReceiverType::STOREHOUSE; }
 
     IPackageStockpile::const_iterator begin() const override { return _d->cbegin(); }
     IPackageStockpile::const_iterator cbegin() const override { return _d->cbegin(); }
@@ -117,7 +117,7 @@ public:
     ElementID get_id() const override { return _id; }
     void do_work(Time t); // Do omówienia!
     void receive_package(Package&& p) override { _q->push(std::move(p)); }
-    ReceiverType get_receiver_type() override { return ReceiverType ::WORKER; }
+    ReceiverType get_receiver_type() const override { return ReceiverType::WORKER; }
 
     IPackageStockpile::const_iterator begin() const override { return _q->cbegin(); }
     IPackageStockpile::const_iterator cbegin() const override { return _q->cbegin(); }

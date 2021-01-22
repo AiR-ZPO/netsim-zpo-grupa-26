@@ -24,7 +24,7 @@ TEST(WorkerTest, HasBuffer) {
     // Test scenariusza opisanego na stronie:
     // http://home.agh.edu.pl/~mdig/dokuwiki/doku.php?id=teaching:programming:soft-dev:topics:net-simulation:part_nodes#bufor_aktualnie_przetwarzanego_polproduktu
 
-    Worker w(1, 2, std::make_unique<PackageQueue>(PackageQueueType::Fifo_));
+    Worker w(1, 2, std::make_unique<PackageQueue>(PackageQueueType::FIFO));
     Time t = 1;
 
     w.receive_package(Package(1));

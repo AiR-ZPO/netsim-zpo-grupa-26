@@ -163,7 +163,22 @@ void Factory::add_worker(Worker&& worker)
 
 void Factory::remove_worker(ElementID id)
 {
+    for(auto& i: _ramps_list)
+    {
+        Worker* worker_ptr = &(*find_worker_by_id(id));
+        auto package_receiver_ptr = dynamic_cast<IPackageReceiver*>(worker_ptr);
+        i.receiver_preferences_.remove_receiver(package_receiver_ptr);
+    }
+    for(auto& i: _workers_list)
+    {
+
+        Worker* worker_ptr = &(*find_worker_by_id(id));
+        auto package_receiver_ptr = dynamic_cast<IPackageReceiver*>(worker_ptr);
+        i.receiver_preferences_.remove_receiver(package_receiver_ptr);
+    }
     _workers_list.remove_by_id(id);
+
+
 }
 
 
@@ -174,5 +189,19 @@ void Factory::add_storehouse(Storehouse&& storehouse)
 
 void Factory::remove_storehouse(ElementID id)
 {
+
+    for(auto& i: _ramps_list)
+    {
+        Storehouse* storehouse_ptr = &(*find_storehouse_by_id(id));
+        auto package_receiver_ptr = dynamic_cast<IPackageReceiver*>(storehouse_ptr);
+        i.receiver_preferences_.remove_receiver(package_receiver_ptr);
+    }
+    for(auto& i: _workers_list)
+    {
+
+        Storehouse* storehouse_ptr = &(*find_storehouse_by_id(id));
+        auto package_receiver_ptr = dynamic_cast<IPackageReceiver*>(storehouse_ptr);
+        i.receiver_preferences_.remove_receiver(package_receiver_ptr);
+    }
     _storehouses_list.remove_by_id(id);
 }

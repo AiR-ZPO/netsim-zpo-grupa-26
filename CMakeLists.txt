@@ -24,6 +24,7 @@ set(SOURCES_FILES_TESTS
         test/net_test.cpp
         test/test_package.cpp
         test/test_nodes.cpp
+        #test/test_Factory.cpp
         )
 
 # Dodaj konfigurację typu `Test`.
