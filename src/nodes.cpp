@@ -22,52 +22,51 @@ void PackageSender::push_package(Package&& p)
     }
 }
 
-void ReceiverPreferences::add_receiver(IPackageReceiver* r)
-{
-    preference_[r] = probability_generator();
+void ReceiverPreferences::add_receiver(IPackageReceiver* r) {
     double sum = 0.0;
+    preference_[r] = 1;
     for (auto i = preference_.begin(); i != preference_.end(); i++){
-        sum += i->second;
+        preference_[i->first] = 1.0 / preference_.size();
+        sum = sum + i->second;
     }
-    for (auto it = preference_.begin(); it != preference_.end(); it++){
-        it->second = it->second/sum;
-    }
-}
+    if (sum != 1.0)
+        preference_[r] = preference_[r] + 1.0 - sum;
 
+}
 void ReceiverPreferences::remove_receiver(IPackageReceiver* r)
 {
     preference_.erase(r);
     double sum = 0.0;
     for (auto i = preference_.begin(); i != preference_.end(); i++){
         sum += i->second;
-    }
 
-    for (auto it = preference_.begin(); it != preference_.end(); it++){
-        it->second = it->second/sum;
     }
-}
-
-IPackageReceiver* ReceiverPreferences::choose_receiver()
-{
-    double r = default_probability_generator();
-    int size = preference_.size();
-    double a = 0.0;
-    auto b = preference_.begin();
-    for (int i = 1; i<=size; i++)
+    if (sum != 1.0)
     {
-        if (r >= a and r < b->second)
+        for (auto it = preference_.begin(); it != preference_.end(); it++)
         {
-            break;
-        }
-        else
-        {
-            a += b->second;
-            (b++)->second += b->second;
-            b++;
+            it->second = it->second / sum;
         }
     }
-    return b->first;
 }
+
+IPackageReceiver* ReceiverPreferences::choose_receiver() {
+    auto a = 0.0;
+    auto r = probability_generator();
+
+    for (auto& it : preference_) {
+        if (r >= a)
+        {
+            if (r < a + it.second)
+            {
+                return it.first;
+            }
+        }
+        a = a + it.second;
+    }
+    return nullptr;
+}
+
 
 void Ramp::deliver_goods(Time t) {
     if (_di == 1){
